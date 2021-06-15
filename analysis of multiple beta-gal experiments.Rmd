@@ -15,7 +15,13 @@ library(tidyverse)
 source("betaGalAnalysisFunctions.R")
 theme_set(theme_classic())
 
-fileNames <- c("sampleData/6-6-18 LB32_LB73.xlsx","sampleData/6-6-18 LB32_LB73 fake data for testing.xlsx")
+fileNames <- c("myData/JHL beta gal data 1.1.2.xlsx",
+               "myData/JHL beta gal data 1.2.2.xlsx", 
+               "myData/JHL beta gal data 1.3.2.xlsx",
+               "myData/JHL beta gal data 1.4.2.xlsx",
+               "myData/JHL beta gal data 1.5.2.xlsx",
+               "myData/JHL beta gal data 1.6.2.xlsx",
+               "myData/JHL beta gal data 1.7.2.xlsx")
 
 processedFiles <- map(fileNames, meanExpressionOneReplicate)
 
@@ -48,7 +54,7 @@ This function expects three RpoS levels, so for this example I'll subset out som
 
 ```{r}
 dataForSensitivity <- combinedData %>% 
-                        filter(RpoS == 0 | RpoS == 19 | RpoS == 94) 
+                        filter(RpoS == 0 | RpoS == 26 | RpoS == 89) 
 ```
 
 
@@ -57,6 +63,8 @@ Calculate sensitivity of a promoter.
 sensitivities <- dataForSensitivity %>% 
                   group_by(strain, date, experimenter) %>%
                   summarise(sensitivity = calculateSingleSens(RpoS, meanExpression))
+
+sensitivities
 ```
 
 
@@ -65,7 +73,7 @@ Plot the data with a line to illustrate null expectation used to assess sensitiv
 
 ```{r}
 segmentEnds <- dayMeans %>%
-                filter(RpoS == 0 | RpoS == 94) %>%
+                filter(RpoS == 0 | RpoS == 26 | RpoS == 89) %>%
                 group_by(strain) %>%
                 summarise(
                   RpoS_min = min(RpoS),
@@ -80,7 +88,6 @@ segmentEnds <- dayMeans %>%
 If you designed your experiment with only three RpoS levels, delete the the `filter` step. Note that we have to go back a step to use use the `dayMeans` tibble.
 ```{r}
 dayMeans %>% 
-  filter(RpoS == 0 | RpoS == 19 | RpoS == 94) %>% 
   ggplot() + 
   geom_point(aes(x = RpoS, y = meanAcrossDays, size = 4), show.legend = FALSE) + 
   geom_errorbar(aes(x = RpoS, y = meanAcrossDays, ymax = upperErrorBar, ymin = lowerErrorBar)) + 
