@@ -51,7 +51,7 @@ source("betaGalAnalysisFunctions.R")
 ###To start the analysis, read in the data.
 
 ```{r}
-fileName <- "sampleData/6-6-18 LB32_LB73.xlsx" #Enter your Excel file here. Remember that tab completion will help you get the path & name correct
+fileName <- "myData/JHL beta gal data 3.4.xlsx" #Enter your Excel file here. Remember that tab completion will help you get the path & name correct
 OD420data <- read_excel(fileName, sheet = 2)
 OD600data <- read_excel(fileName, sheet = 3)
 ```
@@ -72,7 +72,6 @@ meanCellDensities <-  filter(OD600data, strain != "blank") %>%
                   group_by(strain, RpoS) %>% 
                   summarise(meanDensity = mean(trueDensity)) 
   
-
 combinedData <-left_join(OD420data, meanCellDensities, by=c("strain", "RpoS")) %>%
                 select(`Blank 420`, experimenter, date, strain, RpoS, dilutionFactor, volumeAssayed, reactionTime, meanDensity) %>%
                 filter(strain != "blank") %>%
